@@ -19,6 +19,8 @@ export async function fetchUser() {
 export default async function Dashboard() {
     const { data } = await fetchUser()
     const users = data
+    console.log(users);
+    
 
     return (
         <Box>

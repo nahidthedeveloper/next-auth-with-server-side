@@ -11,6 +11,7 @@ import {
 import '../app/globals.css'
 import Link from 'next/link'
 import { signOut, useSession } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
@@ -62,6 +63,8 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 const Navbar = ({ toggleThemeMode, darkMode }) => {
     const { data, status } = useSession()
+    const pathname = usePathname()
+    const activeColor = '#1e1e1e'
 
     return (
         <AppBar position="sticky">
@@ -75,7 +78,14 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
                     {status === 'authenticated' ? (
                         <div>
                             <Link href="/dashboard">
-                                <Button sx={{ my: 2, color: 'white' }}>
+                                <Button
+                                    sx={{
+                                        my: 2,
+                                        bgcolor:
+                                            pathname === '/dashboard' &&
+                                            activeColor,
+                                    }}
+                                >
                                     Dashboard
                                 </Button>
                             </Link>
@@ -91,13 +101,27 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
                     ) : (
                         <Box>
                             <Link href="/auth/signup">
-                                <Button sx={{ my: 2, color: 'white' }}>
+                                <Button
+                                    sx={{
+                                        my: 2,
+                                        bgcolor:
+                                            pathname === '/auth/signup' &&
+                                            activeColor,
+                                    }}
+                                >
                                     Signup
                                 </Button>
                             </Link>
 
                             <Link href="/auth/login">
-                                <Button sx={{ my: 2, color: 'white' }}>
+                                <Button
+                                    sx={{
+                                        my: 2,
+                                        bgcolor:
+                                            pathname === '/auth/login' &&
+                                            activeColor,
+                                    }}
+                                >
                                     Login
                                 </Button>
                             </Link>

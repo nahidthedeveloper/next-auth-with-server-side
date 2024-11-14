@@ -9,15 +9,17 @@ import TableHead from '@mui/material/TableHead'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import { useSession } from 'next-auth/react'
+import Button from '@mui/material/Button'
 
 const columns = [
+    { id: 'list', label: 'No.', minWidth: 50, align: 'center' },
     { id: 'username', label: 'Username', minWidth: 170 },
     { id: 'email', label: 'Email', minWidth: 100 },
     {
         id: 'role',
         label: 'Role',
         minWidth: 170,
-        align: 'center',
+        align: 'left',
         format: (value) => value.toLocaleString('en-US'),
     },
     {
@@ -29,7 +31,7 @@ const columns = [
     },
 ]
 
-export default function StickyHeadTable({users}) {
+export default function StickyHeadTable({ users }) {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const { status } = useSession()
@@ -41,6 +43,14 @@ export default function StickyHeadTable({users}) {
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value)
         setPage(0)
+    }
+
+    const handleEdit = (userId) => {
+        console.log('Edit user:', userId)
+    }
+
+    const handlePermission = (userId) => {
+        console.log('Set permissions for user:', userId)
     }
 
     return (
@@ -66,7 +76,7 @@ export default function StickyHeadTable({users}) {
                                 page * rowsPerPage,
                                 page * rowsPerPage + rowsPerPage
                             )
-                            .map((user) => {
+                            .map((user, index) => {
                                 return (
                                     <TableRow
                                         hover
@@ -74,7 +84,8 @@ export default function StickyHeadTable({users}) {
                                         tabIndex={-1}
                                         key={user.id}
                                     >
-                                        {columns.map((column) => {
+                                        <TableCell align='center'>{index + 1}</TableCell>
+                                        {columns.slice(1, -1).map((column) => {
                                             const value = user[column.id]
                                             return (
                                                 <TableCell
@@ -88,6 +99,27 @@ export default function StickyHeadTable({users}) {
                                                 </TableCell>
                                             )
                                         })}
+                                        <TableCell align="center">
+                                            <Button
+                                                variant="outlined"
+                                                color="primary"
+                                                onClick={() =>
+                                                    handleEdit(user.id)
+                                                }
+                                                style={{ marginRight: '8px' }}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                variant="outlined"
+                                                color="secondary"
+                                                onClick={() =>
+                                                    handlePermission(user.id)
+                                                }
+                                            >
+                                                Permission
+                                            </Button>
+                                        </TableCell>
                                     </TableRow>
                                 )
                             })}
