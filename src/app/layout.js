@@ -1,7 +1,6 @@
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { SessionProvider } from '@/providers/SessionProvider'
-import { TokenProvider } from '@/context/tokenContext'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter'
 import ThemeProvider from '@/providers/themeProvider'
 import { ThemeProvider as NextThemeProvider } from 'next-themes'
@@ -22,14 +21,12 @@ export default function RootLayout({ children }) {
                 <NextThemeProvider defaultTheme="dark">
                     <AppRouterCacheProvider options={{ key: 'css' }}>
                         <SessionProvider>
-                            <TokenProvider>
-                                <ThemeProvider>
-                                    <div className="container">
-                                        {children}
-                                        <ToastContainer />
-                                    </div>
-                                </ThemeProvider>
-                            </TokenProvider>
+                            <ThemeProvider>
+                                <div className="container">
+                                    {children}
+                                    <ToastContainer />
+                                </div>
+                            </ThemeProvider>
                         </SessionProvider>
                     </AppRouterCacheProvider>
                 </NextThemeProvider>

@@ -72,20 +72,22 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
                     </Link>
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <MaterialUISwitch
-                        sx={{ mr: '20px' }}
-                        checked={darkMode}
-                        onChange={toggleThemeMode}
-                    />
                     {status === 'authenticated' ? (
-                        <Button
-                            variant="contained"
-                            sx={{ ml: '30px', bgcolor: 'button' }}
-                            size="small"
-                            onClick={() => signOut()}
-                        >
-                            Logout
-                        </Button>
+                        <div>
+                            <Link href="/dashboard">
+                                <Button sx={{ my: 2, color: 'white' }}>
+                                    Dashboard
+                                </Button>
+                            </Link>
+                            <Button
+                                variant="contained"
+                                sx={{ ml: '30px', bgcolor: 'button' }}
+                                size="small"
+                                onClick={() => signOut()}
+                            >
+                                Logout
+                            </Button>
+                        </div>
                     ) : (
                         <Box>
                             <Link href="/auth/signup">
@@ -101,6 +103,11 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
                             </Link>
                         </Box>
                     )}
+                    <MaterialUISwitch
+                        sx={{ ml: '20px' }}
+                        checked={darkMode}
+                        onChange={toggleThemeMode}
+                    />
                 </Box>
             </Toolbar>
         </AppBar>
