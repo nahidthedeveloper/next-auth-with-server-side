@@ -1,11 +1,11 @@
 import StickyHeadTable from '@/components/Dashboard/StickyHeadTable'
-import { createHttpClient, httpClient } from '@/utils/api'
+import { createHttpServer } from '@/utils/api_server'
 import { Box, Typography } from '@mui/material'
 
 export async function fetchUser() {
-    const httpClient = await createHttpClient()
+    const httpServer = await createHttpServer()
     try {
-        const res = await httpClient.get('/user/')
+        const res = await httpServer.get('/user/')
         return {
             data: res.data,
         }
@@ -19,8 +19,6 @@ export async function fetchUser() {
 export default async function Dashboard() {
     const { data } = await fetchUser()
     const users = data
-    console.log(users);
-    
 
     return (
         <Box>

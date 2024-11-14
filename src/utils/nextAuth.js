@@ -1,7 +1,7 @@
 import CredentialsProvider from 'next-auth/providers/credentials'
-
-import { httpClient } from './api'
 import { objectToArray } from './index'
+import { httpClient } from './api'
+
 
 export const authOptions = {
     providers: [
@@ -30,21 +30,21 @@ export const authOptions = {
         }),
     ],
     callbacks: {
-        async jwt({token, user}) {
+        async jwt({ token, user }) {
             if (user) {
                 token = {
                     ...token,
                     ...user,
-                };
+                }
             }
-            return token;
+            return token
         },
-        async session({session, token}) {
+        async session({ session, token }) {
             session.user = {
                 ...token,
                 ...session.user,
-            };
-            return session;
+            }
+            return session
         },
     },
     pages: {

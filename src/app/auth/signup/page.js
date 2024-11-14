@@ -15,10 +15,10 @@ import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { signupSchema } from '@/components/validators'
-import { httpClient } from '@/utils/api'
 import { toast } from 'react-toastify'
 import { objectToArray } from '@/utils'
 import { CircularProgress } from '@mui/material'
+import { httpClient } from '@/utils/api'
 
 export default function SignUp() {
     const [agree, setAgree] = useState(false)
