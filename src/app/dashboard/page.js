@@ -7,18 +7,17 @@ export async function fetchUser() {
     try {
         const res = await httpServer.get('/user/')
         return {
-            data: res.data,
+            users: res.data,
         }
     } catch (err) {
         return {
-            data: [],
+            users: [],
         }
     }
 }
 
 export default async function Dashboard() {
-    const { data } = await fetchUser()
-    const users = data
+    const { users } = await fetchUser()
 
     return (
         <Box>
