@@ -96,11 +96,9 @@ export default function SignIn() {
                         autoComplete="email"
                         autoFocus
                         error={!!errors.email}
+                        helperText={errors.email?.message}
                         {...register('email')}
                     />
-                    <Typography variant="body2" color="red" mx="4px">
-                        {errors.email?.message}
-                    </Typography>
                     <TextField
                         margin="normal"
                         required
@@ -111,11 +109,9 @@ export default function SignIn() {
                         id="password"
                         autoComplete="current-password"
                         error={!!errors.password}
+                        helperText={errors.password?.message}
                         {...register('password')}
                     />
-                    <Typography variant="body2" color="red" mx="4px">
-                        {errors.password?.message}
-                    </Typography>
                     <Button
                         type="submit"
                         fullWidth
@@ -123,7 +119,7 @@ export default function SignIn() {
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                     >
-                        {loading ? <CircularProgress  size='30px'/> : 'Sign In'}
+                        {loading ? <CircularProgress size="30px" /> : 'Sign In'}
                     </Button>
                     <Grid container>
                         <Grid item xs>
@@ -136,7 +132,7 @@ export default function SignIn() {
                         <Grid item>
                             <Link href={'/auth/signup/'}>
                                 <Typography variant="body2">
-                                    {"Don't have an account? Sign Up"}
+                                    {'Don\'t have an account? Sign Up'}
                                 </Typography>
                             </Link>
                         </Grid>

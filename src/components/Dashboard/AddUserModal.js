@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
     Dialog,
     DialogActions,
@@ -6,110 +6,123 @@ import {
     DialogTitle,
     TextField,
     Button,
+    CircularProgress,
     FormControl,
     InputLabel,
     Select,
     MenuItem,
-    FormHelperText,
+    Typography, FormHelperText,
 } from '@mui/material'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { toast } from 'react-toastify'
+import { signupSchema } from '@/components/validators'
 
 const roles = ['Admin', 'Manager', 'User']
 
 export default function AddUserModal({ open, onClose, onAddUser }) {
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
-    const [role, setRole] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [error, setError] = useState({
-        passwordMismatch: false,
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset,
+    } = useForm({
+        mode: 'onTouched',
+        resolver: yupResolver(signupSchema),
     })
 
-    const handleAddUser = () => {
-        if (password !== confirmPassword) {
-            setError({ passwordMismatch: true })
-            return
-        }
-
-        setError({ passwordMismatch: false })
-
-        const newUser = {
-            username,
-            email,
-            role,
-            password,
-        }
-
+    const submitForm = (data) => {
+        const { username, email, role, password } = data
+        const newUser = { username, email, role, password }
         onAddUser(newUser)
+        toast.success('User added successfully!')
+        reset()
         onClose()
     }
 
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
             <DialogTitle>Add New User</DialogTitle>
             <DialogContent>
-                <TextField
-                    label="Username"
-                    fullWidth
-                    margin="normal"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                <TextField
-                    label="Email"
-                    fullWidth
-                    margin="normal"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <FormControl fullWidth margin="dense">
-                    <InputLabel htmlFor="role-select">Select Role</InputLabel>
-                    <Select
-                        id="role-select"
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                        label="Select Role"
+                <form onSubmit={handleSubmit(submitForm)} noValidate>
+                    <TextField
+                        fullWidth
+                        label="Username"
+                        margin="normal"
+                        {...register('username')}
+                        error={!!errors.username}
+                        helperText={errors.username?.message}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Email"
+                        type="email"
+                        margin="normal"
+                        {...register('email')}
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                    />
+                    <FormControl
+                        fullWidth
+                        margin="normal"
+                        error={!!errors.role}
                     >
-                        {roles.map((roleOption) => (
-                            <MenuItem
-                                key={roleOption}
-                                value={roleOption.toLowerCase()}
-                            >
-                                {roleOption}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <TextField
-                    label="Password"
-                    fullWidth
-                    margin="normal"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <TextField
-                    label="Confirm Password"
-                    fullWidth
-                    margin="normal"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    error={error.passwordMismatch}
-                    helperText={
-                        error.passwordMismatch ? 'Passwords do not match' : ''
-                    }
-                />
+                        <InputLabel>Select Role</InputLabel>
+                        <Select {...register('role')} defaultValue="" label="Select Role">
+                            {roles.map((roleOption) => (
+                                <MenuItem
+                                    key={roleOption}
+                                    value={roleOption.toLowerCase()}
+                                    l
+                                >
+                                    {roleOption}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <FormHelperText error>
+                            {errors.role?.message}
+                        </FormHelperText>
+                    </FormControl>
+                    <TextField
+                        fullWidth
+                        label="Password"
+                        type="password"
+                        margin="normal"
+                        {...register('password')}
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Confirm Password"
+                        type="password"
+                        margin="normal"
+                        {...register('confirm_password')}
+                        error={!!errors.confirm_password}
+                        helperText={errors.confirm_password?.message}
+                    />
+                    <DialogActions sx={{ mt: 2 }}>
+                        <Button onClick={onClose} color="secondary">
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? (
+                                <CircularProgress
+                                    sx={{ color: 'white' }}
+                                    size={20}
+                                />
+                            ) : (
+                                'Add User'
+                            )}
+                        </Button>
+                    </DialogActions>
+                </form>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} color="primary">
-                    Cancel
-                </Button>
-                <Button onClick={handleAddUser} color="primary">
-                    Add User
-                </Button>
-            </DialogActions>
         </Dialog>
     )
 }

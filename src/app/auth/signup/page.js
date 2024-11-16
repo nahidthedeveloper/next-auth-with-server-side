@@ -104,15 +104,14 @@ export default function SignUp() {
                             <TextField
                                 required
                                 fullWidth
+                                autoFocus
                                 id="username"
                                 label="Username"
                                 autoComplete="username"
                                 error={!!errors.username}
+                                helperText={errors.username?.message}
                                 {...register('username')}
                             />
-                            <Typography variant="body2" color="red" mx="4px">
-                                {errors.username?.message}
-                            </Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -122,11 +121,9 @@ export default function SignUp() {
                                 label="Email Address"
                                 autoComplete="email"
                                 error={!!errors.email}
+                                helperText={errors.email?.message}
                                 {...register('email')}
                             />
-                            <Typography variant="body2" color="red" mx="4px">
-                                {errors.email?.message}
-                            </Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -137,11 +134,9 @@ export default function SignUp() {
                                 id="password"
                                 autoComplete="new-password"
                                 error={!!errors.password}
+                                helperText={errors.password?.message}
                                 {...register('password')}
                             />
-                            <Typography variant="body2" color="red" mx="4px">
-                                {errors.password?.message}
-                            </Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -152,11 +147,9 @@ export default function SignUp() {
                                 id="cpassword"
                                 autoComplete="new-password"
                                 error={!!errors.password}
+                                helperText={errors.confirm_password?.message}
                                 {...register('confirm_password')}
                             />
-                            <Typography variant="body2" color="red" mx="4px">
-                                {errors.confirm_password?.message}
-                            </Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <FormControlLabel

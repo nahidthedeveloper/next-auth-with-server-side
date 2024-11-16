@@ -11,6 +11,7 @@ export const signupSchema = yup
             .string()
             .required('Email is required.')
             .email('Email must be a valid email'),
+        role: yup.string().required('Role is required'),
         password: yup
             .string()
             .required('Password is required.')
@@ -23,25 +24,25 @@ export const signupSchema = yup
     })
     .required()
 
-    export const loginSchema = yup
-      .object({
+export const loginSchema = yup
+    .object({
         email: yup
-          .string()
-          .required('This field is required.')
-          .test(
-            'Email or Username',
-            'Must be a valid email or username',
-            (value) => {
-              if (!value) return false;
-              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-              const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-              return emailRegex.test(value) || usernameRegex.test(value);
-            }
-          ),
+            .string()
+            .required('This field is required.')
+            .test(
+                'Email or Username',
+                'Must be a valid email or username',
+                (value) => {
+                    if (!value) return false
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/
+                    return emailRegex.test(value) || usernameRegex.test(value)
+                },
+            ),
         password: yup
-          .string()
-          .required('This field is required.')
-          .min(8, 'Password must be at least 8 characters'),
-      })
-      .required();
+            .string()
+            .required('This field is required.')
+            .min(8, 'Password must be at least 8 characters'),
+    })
+    .required()
     
