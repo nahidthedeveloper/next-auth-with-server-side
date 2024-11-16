@@ -39,7 +39,7 @@ export default async function Dashboard() {
     return (
         <Box>
             <DashboardClient
-                users={users}
+                all_users={users}
                 permissionsList={permissionsList}
                 login_user_permissions={login_user_permissions}
             />

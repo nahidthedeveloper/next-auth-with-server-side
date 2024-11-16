@@ -20,7 +20,7 @@ import { signupSchema } from '@/components/validators'
 
 const roles = ['Admin', 'Manager', 'User']
 
-export default function AddUserModal({ open, onClose, onAddUser }) {
+export default function AddUserModal({ open, onClose, fetchUser }) {
     const {
         register,
         handleSubmit,
@@ -32,10 +32,9 @@ export default function AddUserModal({ open, onClose, onAddUser }) {
     })
 
     const submitForm = (data) => {
-        const { username, email, role, password } = data
-        const newUser = { username, email, role, password }
-        onAddUser(newUser)
-        toast.success('User added successfully!')
+        console.log(data)
+
+        fetchUser() //if successfully user created then call this function
         reset()
         onClose()
     }
@@ -73,7 +72,6 @@ export default function AddUserModal({ open, onClose, onAddUser }) {
                                 <MenuItem
                                     key={roleOption}
                                     value={roleOption.toLowerCase()}
-                                    l
                                 >
                                     {roleOption}
                                 </MenuItem>

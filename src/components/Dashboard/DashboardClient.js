@@ -4,17 +4,31 @@ import { Box, Button, Typography } from '@mui/material'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import AddUserModal from './AddUserModal'
 import StickyHeadTable from './StickyHeadTable'
+import { httpClient } from '@/utils/api'
 
 export default function DashboardClient({
-    users,
-    permissionsList,
-    login_user_permissions,
-}) {
-    const [openModal, setOpenModal] = useState(false)
+                                            all_users,
+                                            permissionsList,
+                                            login_user_permissions,
+                                        }) {
 
-    const handleAddUser = (newUser) => {
-        console.log('New user added:', newUser)
+    const [openModal, setOpenModal] = useState(false)
+    const [users, setUsers] = useState(all_users)
+
+    async function fetchUser() {
+        try {
+            const res = await httpClient.get('/user/')
+            return {
+                users: res.data,
+            }
+        } catch (err) {
+            console.log(err)
+            return {
+                users: [],
+            }
+        }
     }
+
 
     return (
         <Box>
@@ -44,13 +58,15 @@ export default function DashboardClient({
             </Box>
 
             <StickyHeadTable
-                initialUsers={users}
+                users={users}
+                setUsers={setUsers}
+                fetchUser={fetchUser}
                 permissionsList={permissionsList}
             />
             <AddUserModal
                 open={openModal}
+                fetchUser={fetchUser}
                 onClose={() => setOpenModal(false)}
-                onAddUser={handleAddUser}
             />
         </Box>
     )

@@ -5,8 +5,7 @@ import DeleteModal from '@/components/Modal/DeleteModal'
 import UserTable from '@/components/Dashboard/UserTable'
 import { httpClient } from '@/utils/api'
 
-export default function StickyHeadTable({ initialUsers, permissionsList }) {
-    const [users, setUsers] = useState(initialUsers)
+export default function StickyHeadTable({ users, setUsers, fetchUser, permissionsList }) {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [openModal, setOpenModal] = useState({ edit: false, delete: false })
@@ -51,7 +50,7 @@ export default function StickyHeadTable({ initialUsers, permissionsList }) {
         try {
             const res = await httpClient.patch(
                 `/user/${currentUser.id}/`,
-                payload
+                payload,
             )
             alert(res.data.detail)
 
@@ -73,20 +72,6 @@ export default function StickyHeadTable({ initialUsers, permissionsList }) {
             console.log(err)
         }
         setOpenModal({ edit: false, delete: false })
-    }
-    
-    async function fetchUser() {
-        try {
-            const res = await httpClient.get('/user/')
-            return {
-                users: res.data,
-            }
-        } catch (err) {
-            console.log(err)
-            return {
-                users: [],
-            }
-        }
     }
 
     return (
@@ -116,7 +101,7 @@ export default function StickyHeadTable({ initialUsers, permissionsList }) {
                     setUserPermissions(
                         typeof e.target.value === 'string'
                             ? e.target.value.split(',')
-                            : e.target.value
+                            : e.target.value,
                     )
                 }
                 handleSave={handleSaveEdit}
