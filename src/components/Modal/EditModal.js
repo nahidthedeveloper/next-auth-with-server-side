@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useEffect } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
@@ -11,24 +12,33 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 
+const roles = ['Admin', 'Manager', 'User']
+
 const EditModal = ({
-                       open,
-                       user,
-                       roles,
-                       permissionsList,
-                       userRole,
-                       userPermissions,
-                       handleClose,
-                       handleInputChange,
-                       handleRoleChange,
-                       handlePermissionsChange,
-                       handleSave,
-                   }) => {
+    permissionsList,
+    open,
+    user,
+    userRole,
+    userPermissions,
+    setUserPermissions,
+    handleClose,
+    handleInputChange,
+    handleRoleChange,
+    handlePermissionsChange,
+    handleSave,
+}) => {
+
+    useEffect(() => {
+        if (user?.permissions) {
+            setUserPermissions(user.permissions.map(permission => permission.id));
+        }
+    }, [user]);
+
     return (
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Edit User</DialogTitle>
             <DialogContent>
-                <DialogContentText sx={{mb: 3}}>
+                <DialogContentText sx={{ mb: 3 }}>
                     Modify the details for this user.
                 </DialogContentText>
                 {/* Username Field */}
@@ -49,7 +59,6 @@ const EditModal = ({
                     value={user?.email || ''}
                     onChange={handleInputChange}
                 />
-                {/* Role Selection */}
                 <FormControl fullWidth margin="dense">
                     <InputLabel htmlFor="role-select">Select Role</InputLabel>
                     <Select
@@ -59,7 +68,11 @@ const EditModal = ({
                         label="Select Role"
                     >
                         {roles.map((role) => (
-                            <MenuItem key={role} value={role}>
+                            <MenuItem
+                                key={role}
+                                value={role.toLowerCase()}
+                                selected={userRole === role.toLowerCase()}
+                            >
                                 {role}
                             </MenuItem>
                         ))}
@@ -68,23 +81,23 @@ const EditModal = ({
 
                 {/* Permissions Selection */}
                 <FormControl fullWidth margin="dense">
-                    <InputLabel htmlFor="permissions-select">Permissions</InputLabel>
+                    <InputLabel htmlFor="permissions-select">
+                        Permissions
+                    </InputLabel>
                     <Select
                         id="permissions-select"
                         multiple
                         value={userPermissions}
                         onChange={handlePermissionsChange}
-                        renderValue={(selected) => selected.join(', ')}
                         label="Permissions"
                     >
                         {permissionsList.map((permission) => (
-                            <MenuItem key={permission} value={permission}>
-                                {permission}
+                            <MenuItem key={permission.id} value={permission.id}>
+                                {permission.name}
                             </MenuItem>
                         ))}
                     </Select>
                 </FormControl>
-
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="primary">

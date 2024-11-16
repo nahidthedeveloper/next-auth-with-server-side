@@ -1,14 +1,10 @@
 'use client'
-
 import { useState } from 'react'
 import EditModal from '@/components/Modal/EditModal'
 import DeleteModal from '@/components/Modal/DeleteModal'
 import UserTable from '@/components/Dashboard/UserTable'
 
-const roles = ['Admin', 'Manager', 'User']
-const permissionsList = ['Read', 'Write', 'Execute', 'Delete']
-
-export default function StickyHeadTable({ users }) {
+export default function StickyHeadTable({ users, permissionsList }) {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [openEditModal, setOpenEditModal] = useState(false)
@@ -59,12 +55,12 @@ export default function StickyHeadTable({ users }) {
 
             {/* Modals */}
             <EditModal
+                permissionsList={permissionsList}
                 open={openEditModal}
                 user={currentUser}
-                roles={roles}
-                permissionsList={permissionsList}
                 userRole={userRole}
                 userPermissions={userPermissions}
+                setUserPermissions={setUserPermissions}
                 handleClose={() => setOpenEditModal(false)}
                 handleRoleChange={(e) => setUserRole(e.target.value)}
                 handlePermissionsChange={(e) =>

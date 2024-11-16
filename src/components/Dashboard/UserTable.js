@@ -19,14 +19,14 @@ const columns = [
 ]
 
 export default function UserTable({
-                                               users,
-                                               page,
-                                               rowsPerPage,
-                                               handleChangePage,
-                                               handleChangeRowsPerPage,
-                                               handleEdit,
-                                               handleDelete,
-                                           }) {
+    users,
+    page,
+    rowsPerPage,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    handleEdit,
+    handleDelete,
+}) {
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TableContainer sx={{ maxHeight: 440 }}>
@@ -46,14 +46,27 @@ export default function UserTable({
                     </TableHead>
                     <TableBody>
                         {users
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .slice(
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage
+                            )
                             .map((user, index) => (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={user.id}>
-                                    <TableCell align="center">{index + 1}</TableCell>
+                                <TableRow
+                                    hover
+                                    role="checkbox"
+                                    tabIndex={-1}
+                                    key={user.id}
+                                >
+                                    <TableCell align="center">
+                                        {index + 1}
+                                    </TableCell>
                                     {columns.slice(1, -1).map((column) => {
                                         const value = user[column.id]
                                         return (
-                                            <TableCell key={column.id} align={column.align}>
+                                            <TableCell
+                                                key={column.id}
+                                                align={column.align}
+                                            >
                                                 {value}
                                             </TableCell>
                                         )
