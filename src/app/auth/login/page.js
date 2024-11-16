@@ -53,7 +53,7 @@ export default function SignIn() {
                     })
                     setLoading(false)
                 } catch (error) {
-                    // setLoading(false)
+                    setLoading(false)
                     toast.error('Internal server error!')
                 }
             } else {

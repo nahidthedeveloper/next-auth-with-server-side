@@ -19,8 +19,11 @@ import { toast } from 'react-toastify'
 import { objectToArray } from '@/utils'
 import { CircularProgress } from '@mui/material'
 import { httpClient } from '@/utils/api'
+import { useRouter } from 'next/navigation'
 
 export default function SignUp() {
+    const router = useRouter()
+
     const [agree, setAgree] = useState(false)
     const [loader, setLoader] = useState(false)
     const {
@@ -51,6 +54,7 @@ export default function SignUp() {
                 toast.success(response.data.message)
                 setLoader(false)
                 reset()
+                router.push('/auth/login/')
             })
             .catch((err) => {
                 const { data } = err.response

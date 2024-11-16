@@ -32,7 +32,7 @@ async function fetchPermissionList() {
 
 async function fetchLoginUserPermission() {
     try {
-        const res = await httpServer.get('/user/user_permissions/')
+        const res = await httpServer.get('/user/login_user_permissions/')
         return {
             login_user_permissions: res.data.user_permissions,
         }
@@ -48,9 +48,6 @@ export default async function Dashboard() {
     const { permissionsList } = await fetchPermissionList()
     const { login_user_permissions } = await fetchLoginUserPermission()
 
-    console.log(login_user_permissions);
-    
-
     return (
         <Box>
             <Typography
@@ -60,7 +57,10 @@ export default async function Dashboard() {
             >
                 All User Information
             </Typography>
-            <StickyHeadTable users={users} permissionsList={permissionsList} />
+            <StickyHeadTable
+                initialUsers={users}
+                permissionsList={permissionsList}
+            />
         </Box>
     )
 }

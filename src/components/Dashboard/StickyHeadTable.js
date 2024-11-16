@@ -1,44 +1,92 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import EditModal from '@/components/Modal/EditModal'
 import DeleteModal from '@/components/Modal/DeleteModal'
 import UserTable from '@/components/Dashboard/UserTable'
+import { httpClient } from '@/utils/api'
 
-export default function StickyHeadTable({ users, permissionsList }) {
+export default function StickyHeadTable({ initialUsers, permissionsList }) {
+    const [users, setUsers] = useState(initialUsers)
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
-    const [openEditModal, setOpenEditModal] = useState(false)
-    const [openDeleteModal, setOpenDeleteModal] = useState(false)
+    const [openModal, setOpenModal] = useState({ edit: false, delete: false })
     const [currentUser, setCurrentUser] = useState(null)
     const [userRole, setUserRole] = useState('')
     const [userPermissions, setUserPermissions] = useState([])
 
-    const handleChangePage = (event, newPage) => setPage(newPage)
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value)
+    const handleChangePage = (_, newPage) => setPage(newPage)
+    const handleChangeRowsPerPage = (e) => {
+        setRowsPerPage(+e.target.value)
         setPage(0)
     }
 
-    const handleEdit = (user) => {
+    const openEditModal = (user) => {
         setCurrentUser(user)
         setUserRole(user.role || '')
         setUserPermissions(user.permissions || [])
-        setOpenEditModal(true)
+        setOpenModal({ edit: true, delete: false })
     }
 
-    const handleDelete = (user) => {
+    const openDeleteModal = (user) => {
         setCurrentUser(user)
-        setOpenDeleteModal(true)
+        setOpenModal({ edit: false, delete: true })
     }
 
-    const handleSaveEdit = () => {
-        console.log('Saved changes for', currentUser)
-        setOpenEditModal(false)
+    const handleInputChange = (e) => {
+        const { name, value } = e.target
+        setCurrentUser((prevUser) => ({
+            ...prevUser,
+            [name]: value,
+        }))
     }
 
-    const confirmDelete = () => {
-        console.log(`User ${currentUser?.username} deleted.`)
-        setOpenDeleteModal(false)
+    const handleSaveEdit = async () => {
+        const payload = {
+            id: currentUser.id,
+            username: currentUser.username,
+            email: currentUser.email,
+            role: userRole,
+            permissions: userPermissions,
+        }
+        try {
+            const res = await httpClient.patch(
+                `/user/${currentUser.id}/`,
+                payload
+            )
+            alert(res.data.detail)
+
+            const updatedUsers = await fetchUser()
+            setUsers(updatedUsers.users)
+        } catch (err) {
+            console.log(err)
+        }
+        setOpenModal({ edit: false, delete: false })
+    }
+
+    const confirmDelete = async () => {
+        try {
+            const res = await httpClient.delete(`/user/${currentUser.id}/`)
+            alert(res.data.detail)
+            const updatedUsers = await fetchUser()
+            setUsers(updatedUsers.users)
+        } catch (err) {
+            console.log(err)
+        }
+        setOpenModal({ edit: false, delete: false })
+    }
+    
+    async function fetchUser() {
+        try {
+            const res = await httpClient.get('/user/')
+            return {
+                users: res.data,
+            }
+        } catch (err) {
+            console.log(err)
+            return {
+                users: [],
+            }
+        }
     }
 
     return (
@@ -49,19 +97,20 @@ export default function StickyHeadTable({ users, permissionsList }) {
                 rowsPerPage={rowsPerPage}
                 handleChangePage={handleChangePage}
                 handleChangeRowsPerPage={handleChangeRowsPerPage}
-                handleEdit={handleEdit}
-                handleDelete={handleDelete}
+                handleEdit={openEditModal}
+                handleDelete={openDeleteModal}
             />
 
             {/* Modals */}
             <EditModal
                 permissionsList={permissionsList}
-                open={openEditModal}
+                open={openModal.edit}
                 user={currentUser}
                 userRole={userRole}
+                handleInputChange={handleInputChange}
                 userPermissions={userPermissions}
                 setUserPermissions={setUserPermissions}
-                handleClose={() => setOpenEditModal(false)}
+                handleClose={() => setOpenModal({ edit: false, delete: false })}
                 handleRoleChange={(e) => setUserRole(e.target.value)}
                 handlePermissionsChange={(e) =>
                     setUserPermissions(
@@ -73,9 +122,9 @@ export default function StickyHeadTable({ users, permissionsList }) {
                 handleSave={handleSaveEdit}
             />
             <DeleteModal
-                open={openDeleteModal}
+                open={openModal.delete}
                 user={currentUser}
-                handleClose={() => setOpenDeleteModal(false)}
+                handleClose={() => setOpenModal({ edit: false, delete: false })}
                 handleConfirm={confirmDelete}
             />
         </>
