@@ -1,45 +1,33 @@
-import StickyHeadTable from '@/components/Dashboard/StickyHeadTable'
+import DashboardClient from '@/components/Dashboard/DashboardClient'
 import { createHttpServer } from '@/utils/api_server'
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 
 const httpServer = await createHttpServer()
 
 export async function fetchUser() {
     try {
         const res = await httpServer.get('/user/')
-        return {
-            users: res.data,
-        }
+        return { users: res.data }
     } catch (err) {
-        return {
-            users: [],
-        }
+        return { users: [] }
     }
 }
 
 async function fetchPermissionList() {
     try {
         const res = await httpServer.get('/user/authentication_permissions/')
-        return {
-            permissionsList: res.data.permissions,
-        }
+        return { permissionsList: res.data.permissions }
     } catch (err) {
-        return {
-            permissionsList: [],
-        }
+        return { permissionsList: [] }
     }
 }
 
 async function fetchLoginUserPermission() {
     try {
         const res = await httpServer.get('/user/login_user_permissions/')
-        return {
-            login_user_permissions: res.data.user_permissions,
-        }
+        return { login_user_permissions: res.data.user_permissions }
     } catch (err) {
-        return {
-            login_user_permissions: [],
-        }
+        return { login_user_permissions: [] }
     }
 }
 
@@ -50,16 +38,10 @@ export default async function Dashboard() {
 
     return (
         <Box>
-            <Typography
-                variant="h5"
-                gutterBottom
-                sx={{ fontWeight: 'bold', textAlign: 'center', my: '16px' }}
-            >
-                All User Information
-            </Typography>
-            <StickyHeadTable
-                initialUsers={users}
+            <DashboardClient
+                users={users}
                 permissionsList={permissionsList}
+                login_user_permissions={login_user_permissions}
             />
         </Box>
     )
