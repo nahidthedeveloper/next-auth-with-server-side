@@ -40,6 +40,7 @@ export default function DashboardClient({
     const view_user_permission = userPermissions.find(
         (permission) => parseInt(permission.id) === 52
     )
+    
 
     async function fetchLoginUserPermission() {
         try {
