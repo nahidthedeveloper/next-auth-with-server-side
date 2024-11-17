@@ -48,7 +48,7 @@ export default function UserTable({
                     </TableHead>
                     <TableBody>
                         {users
-                            .slice(
+                            ?.slice(
                                 page * rowsPerPage,
                                 page * rowsPerPage + rowsPerPage
                             )
@@ -100,7 +100,7 @@ export default function UserTable({
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={users.length}
+                count={users?.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

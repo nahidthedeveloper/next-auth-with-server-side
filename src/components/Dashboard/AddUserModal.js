@@ -24,46 +24,51 @@ import { objectToArray } from '@/utils'
 
 const roles = ['Admin', 'Manager', 'User']
 
-export default function AddUserModal({ open, onClose, fetchUser }) {
+export default function AddUserModal({ open, onClose, fetchUser, setUsers }) {
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
         reset,
-        setError
+        setError,
     } = useForm({
         mode: 'onTouched',
         resolver: yupResolver(signupSchema),
     })
 
     const submitForm = async (data) => {
-        await httpClient
-            .post(`/user/`, data)
-            .then((response) => {
-                toast.success(response.data.detail)
-                reset()
-                onClose()
-                fetchUser() // Call this function if the user is successfully created
-            })
-            .catch((err) => {
-                const { data } = err.response
-                if (data) {
-                    const { data: errors } = err.response
-                    if (errors) {
-                        if ('non_field_errors' in errors) {
-                            toast.error(errors.non_field_errors[0])
-                        }
+        try {
+            const response = await httpClient.post(`/user/`, data)
+
+            toast.success(response.data.detail)
+            reset()
+            onClose()
+
+            const updatedUsers = await fetchUser()
+
+            setUsers(updatedUsers)
+
+        } catch (err) {
+            const { data } = err.response
+            if (data) {
+                const { data: errors } = err.response
+                if (errors) {
+                    if ('non_field_errors' in errors) {
+                        toast.error(errors.non_field_errors[0])
                     }
-                    const formattedData = objectToArray(data)
-                    formattedData.map((el) => {
-                        setError(el.name, {
-                            type: 'custom',
-                            message: el.message[0],
-                        })
-                    })
                 }
-            })
+
+                const formattedData = objectToArray(data)
+                formattedData.forEach((el) => {
+                    setError(el.name, {
+                        type: 'custom',
+                        message: el.message[0],
+                    })
+                })
+            }
+        }
     }
+
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">

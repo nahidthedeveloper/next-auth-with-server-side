@@ -1,5 +1,6 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+
+import React, { useState, useEffect, useContext } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import AddUserModal from './AddUserModal'
@@ -7,56 +8,63 @@ import StickyHeadTable from './StickyHeadTable'
 import { httpClient } from '@/utils/api'
 import Link from 'next/link'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { TokenContext } from '@/context/tokenContext'
 
 export default function DashboardClient({
-    all_users,
-    permissionsList,
-    login_user_permissions,
-}) {
+                                            all_users,
+                                            permissionsList,
+                                            login_user_permissions,
+                                        }) {
     const [openModal, setOpenModal] = useState(false)
     const [users, setUsers] = useState(all_users)
     const [userPermissions, setUserPermissions] = useState(
-        login_user_permissions
+        login_user_permissions,
     )
-
-    useEffect(() => {
-        fetchLoginUserPermission()
-    }, [login_user_permissions])
-
-    async function fetchUser() {
-        try {
-            const res = await httpClient.get('/user/')
-            setUsers(res.data)
-        } catch (err) {
-            console.error(err)
-        }
-    }
-
-    const create_user_permission = userPermissions.find(
-        (permission) => parseInt(permission.id) === 49
-    )
-    const edit_user_permission = userPermissions.find(
-        (permission) => parseInt(permission.id) === 50
-    )
-    const delete_user_permission = userPermissions.find(
-        (permission) => parseInt(permission.id) === 51
-    )
-    const view_user_permission = userPermissions.find(
-        (permission) => parseInt(permission.id) === 52
-    )
+    const tokenStatus = useContext(TokenContext)
 
     async function fetchLoginUserPermission() {
         try {
             const res = await httpClient.get('/user/login_user_permissions/')
             setUserPermissions(res.data.user_permissions)
         } catch (err) {
-            console.log(err)
+            console.log('Error fetching permissions:', err.response || err)
         }
     }
 
+    const fetchUser = async () => {
+        try {
+            const response = await httpClient.get('/user/')
+            console.log('Fetch User Response:', response.data)
+            return response.data
+        } catch (err) {
+            console.error('Error in fetchUser:', err)
+            return null
+        }
+    }
+
+    useEffect(() => {
+        if (tokenStatus === 'added') {
+            fetchLoginUserPermission()
+            fetchUser()
+        }
+    }, [tokenStatus])
+
+    const create_user_permission = userPermissions.find(
+        (permission) => parseInt(permission.id) === 49,
+    )
+    const edit_user_permission = userPermissions.find(
+        (permission) => parseInt(permission.id) === 50,
+    )
+    const delete_user_permission = userPermissions.find(
+        (permission) => parseInt(permission.id) === 51,
+    )
+    const view_user_permission = userPermissions.find(
+        (permission) => parseInt(permission.id) === 52,
+    )
+
     return (
         <Box>
-            {view_user_permission && view_user_permission ? (
+            {view_user_permission ? (
                 <Box>
                     <Box
                         sx={{
@@ -96,6 +104,7 @@ export default function DashboardClient({
                     <AddUserModal
                         open={openModal}
                         fetchUser={fetchUser}
+                        setUsers={setUsers}
                         onClose={() => setOpenModal(false)}
                     />
                 </Box>
