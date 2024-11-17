@@ -38,7 +38,7 @@ export default function AddUserModal({ open, onClose, fetchUser }) {
 
     const submitForm = async (data) => {
         await httpClient
-            .post(`/user/create_user/`, data) // Pass data directly, no need for spread syntax
+            .post(`/user/`, data)
             .then((response) => {
                 toast.success(response.data.detail)
                 reset()
