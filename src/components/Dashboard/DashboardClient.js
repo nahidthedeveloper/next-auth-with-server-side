@@ -45,7 +45,6 @@ export default function DashboardClient({
     useEffect(() => {
         if (tokenStatus === 'added') {
             fetchLoginUserPermission()
-            fetchUser()
         }
     }, [tokenStatus])
 
