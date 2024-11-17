@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import AddUserModal from './AddUserModal'
@@ -18,6 +18,11 @@ export default function DashboardClient({
     const [userPermissions, setUserPermissions] = useState(
         login_user_permissions
     )
+
+    useEffect(() => {
+        fetchLoginUserPermission()
+    }, [login_user_permissions])
+
 
     async function fetchUser() {
         try {
@@ -40,7 +45,6 @@ export default function DashboardClient({
     const view_user_permission = userPermissions.find(
         (permission) => parseInt(permission.id) === 52
     )
-    
 
     async function fetchLoginUserPermission() {
         try {
@@ -53,7 +57,7 @@ export default function DashboardClient({
 
     return (
         <Box>
-            {view_user_permission && view_user_permission ? (
+            {view_user_permission ? (
                 <Box>
                     <Box
                         sx={{
@@ -91,7 +95,7 @@ export default function DashboardClient({
                         edit_user_permission={edit_user_permission}
                         delete_user_permission={delete_user_permission}
                     />
-                    {create_user_permission && create_user_permission && (
+                    {create_user_permission && (
                         <AddUserModal
                             open={openModal}
                             fetchUser={fetchUser}

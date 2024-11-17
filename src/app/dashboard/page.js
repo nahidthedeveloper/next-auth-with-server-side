@@ -27,7 +27,8 @@ async function fetchLoginUserPermission() {
         const res = await httpServer.get('/user/login_user_permissions/')
         return { login_user_permissions: res.data.user_permissions }
     } catch (err) {
-        return { login_user_permissions: [] }
+        console.log(err);
+        
     }
 }
 
