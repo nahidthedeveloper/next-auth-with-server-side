@@ -57,7 +57,7 @@ export default function DashboardClient({
 
     return (
         <Box>
-            {view_user_permission ? (
+            {view_user_permission && view_user_permission ? (
                 <Box>
                     <Box
                         sx={{
@@ -95,7 +95,7 @@ export default function DashboardClient({
                         edit_user_permission={edit_user_permission}
                         delete_user_permission={delete_user_permission}
                     />
-                    {create_user_permission && (
+                    {create_user_permission && create_user_permission && (
                         <AddUserModal
                             open={openModal}
                             fetchUser={fetchUser}
