@@ -23,7 +23,6 @@ export default function DashboardClient({
         fetchLoginUserPermission()
     }, [login_user_permissions])
 
-
     async function fetchUser() {
         try {
             const res = await httpClient.get('/user/')
@@ -85,7 +84,6 @@ export default function DashboardClient({
                             </Button>
                         )}
                     </Box>
-
                     <StickyHeadTable
                         users={users}
                         setUsers={setUsers}
@@ -95,13 +93,11 @@ export default function DashboardClient({
                         edit_user_permission={edit_user_permission}
                         delete_user_permission={delete_user_permission}
                     />
-                    {create_user_permission && create_user_permission && (
-                        <AddUserModal
-                            open={openModal}
-                            fetchUser={fetchUser}
-                            onClose={() => setOpenModal(false)}
-                        />
-                    )}
+                    <AddUserModal
+                        open={openModal}
+                        fetchUser={fetchUser}
+                        onClose={() => setOpenModal(false)}
+                    />
                 </Box>
             ) : (
                 <Box

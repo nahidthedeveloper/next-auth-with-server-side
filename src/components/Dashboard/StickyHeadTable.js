@@ -98,39 +98,33 @@ export default function StickyHeadTable({
             />
 
             {/* Modals */}
-            {delete_user_permission && (
-                <EditModal
-                    permissionsList={permissionsList}
-                    open={openModal.edit}
-                    user={currentUser}
-                    userRole={userRole}
-                    handleInputChange={handleInputChange}
-                    userPermissions={userPermissions}
-                    setUserPermissions={setUserPermissions}
-                    handleClose={() =>
-                        setOpenModal({ edit: false, delete: false })
-                    }
-                    handleRoleChange={(e) => setUserRole(e.target.value)}
-                    handlePermissionsChange={(e) =>
-                        setUserPermissions(
-                            typeof e.target.value === 'string'
-                                ? e.target.value.split(',')
-                                : e.target.value
-                        )
-                    }
-                    handleSave={handleSaveEdit}
-                />
-            )}
-            {delete_user_permission && (
-                <DeleteModal
-                    open={openModal.delete}
-                    user={currentUser}
-                    handleClose={() =>
-                        setOpenModal({ edit: false, delete: false })
-                    }
-                    handleConfirm={confirmDelete}
-                />
-            )}
+
+            <EditModal
+                permissionsList={permissionsList}
+                open={openModal.edit}
+                user={currentUser}
+                userRole={userRole}
+                handleInputChange={handleInputChange}
+                userPermissions={userPermissions}
+                setUserPermissions={setUserPermissions}
+                handleClose={() => setOpenModal({ edit: false, delete: false })}
+                handleRoleChange={(e) => setUserRole(e.target.value)}
+                handlePermissionsChange={(e) =>
+                    setUserPermissions(
+                        typeof e.target.value === 'string'
+                            ? e.target.value.split(',')
+                            : e.target.value
+                    )
+                }
+                handleSave={handleSaveEdit}
+            />
+
+            <DeleteModal
+                open={openModal.delete}
+                user={currentUser}
+                handleClose={() => setOpenModal({ edit: false, delete: false })}
+                handleConfirm={confirmDelete}
+            />
         </>
     )
 }
