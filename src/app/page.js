@@ -30,7 +30,7 @@ export default async function Home() {
                     <Box sx={{ mb: 3 }}>
                         <Avatar
                             alt={session.user.name}
-                            src={session.user.image || '/default-avatar.png'}
+                            src='#'
                             sx={{
                                 width: 80,
                                 height: 80,

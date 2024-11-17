@@ -5,7 +5,15 @@ import DeleteModal from '@/components/Modal/DeleteModal'
 import UserTable from '@/components/Dashboard/UserTable'
 import { httpClient } from '@/utils/api'
 
-export default function StickyHeadTable({ users, setUsers, fetchUser, permissionsList }) {
+export default function StickyHeadTable({
+    users,
+    setUsers,
+    fetchUser,
+    permissionsList,
+    fetchLoginUserPermission,
+    edit_user_permission,
+    delete_user_permission,
+}) {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [openModal, setOpenModal] = useState({ edit: false, delete: false })
@@ -50,12 +58,13 @@ export default function StickyHeadTable({ users, setUsers, fetchUser, permission
         try {
             const res = await httpClient.patch(
                 `/user/${currentUser.id}/`,
-                payload,
+                payload
             )
             alert(res.data.detail)
 
             const updatedUsers = await fetchUser()
             setUsers(updatedUsers.users)
+            fetchLoginUserPermission()
         } catch (err) {
             console.log(err)
         }
@@ -84,34 +93,44 @@ export default function StickyHeadTable({ users, setUsers, fetchUser, permission
                 handleChangeRowsPerPage={handleChangeRowsPerPage}
                 handleEdit={openEditModal}
                 handleDelete={openDeleteModal}
+                edit_user_permission={edit_user_permission}
+                delete_user_permission={delete_user_permission}
             />
 
             {/* Modals */}
-            <EditModal
-                permissionsList={permissionsList}
-                open={openModal.edit}
-                user={currentUser}
-                userRole={userRole}
-                handleInputChange={handleInputChange}
-                userPermissions={userPermissions}
-                setUserPermissions={setUserPermissions}
-                handleClose={() => setOpenModal({ edit: false, delete: false })}
-                handleRoleChange={(e) => setUserRole(e.target.value)}
-                handlePermissionsChange={(e) =>
-                    setUserPermissions(
-                        typeof e.target.value === 'string'
-                            ? e.target.value.split(',')
-                            : e.target.value,
-                    )
-                }
-                handleSave={handleSaveEdit}
-            />
-            <DeleteModal
-                open={openModal.delete}
-                user={currentUser}
-                handleClose={() => setOpenModal({ edit: false, delete: false })}
-                handleConfirm={confirmDelete}
-            />
+            {delete_user_permission && (
+                <EditModal
+                    permissionsList={permissionsList}
+                    open={openModal.edit}
+                    user={currentUser}
+                    userRole={userRole}
+                    handleInputChange={handleInputChange}
+                    userPermissions={userPermissions}
+                    setUserPermissions={setUserPermissions}
+                    handleClose={() =>
+                        setOpenModal({ edit: false, delete: false })
+                    }
+                    handleRoleChange={(e) => setUserRole(e.target.value)}
+                    handlePermissionsChange={(e) =>
+                        setUserPermissions(
+                            typeof e.target.value === 'string'
+                                ? e.target.value.split(',')
+                                : e.target.value
+                        )
+                    }
+                    handleSave={handleSaveEdit}
+                />
+            )}
+            {delete_user_permission && (
+                <DeleteModal
+                    open={openModal.delete}
+                    user={currentUser}
+                    handleClose={() =>
+                        setOpenModal({ edit: false, delete: false })
+                    }
+                    handleConfirm={confirmDelete}
+                />
+            )}
         </>
     )
 }

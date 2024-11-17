@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import {
     Dialog,
@@ -11,12 +12,15 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    Typography, FormHelperText,
+    Typography,
+    FormHelperText,
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { toast } from 'react-toastify'
 import { signupSchema } from '@/components/validators'
+import { httpClient } from '@/utils/api'
+import { objectToArray } from '@/utils'
 
 const roles = ['Admin', 'Manager', 'User']
 
@@ -26,17 +30,39 @@ export default function AddUserModal({ open, onClose, fetchUser }) {
         handleSubmit,
         formState: { errors, isSubmitting },
         reset,
+        setError
     } = useForm({
         mode: 'onTouched',
         resolver: yupResolver(signupSchema),
     })
 
-    const submitForm = (data) => {
-        console.log(data)
-
-        fetchUser() //if successfully user created then call this function
-        reset()
-        onClose()
+    const submitForm = async (data) => {
+        await httpClient
+            .post(`/user/create_user/`, data) // Pass data directly, no need for spread syntax
+            .then((response) => {
+                toast.success(response.data.detail)
+                reset()
+                onClose()
+                fetchUser() // Call this function if the user is successfully created
+            })
+            .catch((err) => {
+                const { data } = err.response
+                if (data) {
+                    const { data: errors } = err.response
+                    if (errors) {
+                        if ('non_field_errors' in errors) {
+                            toast.error(errors.non_field_errors[0])
+                        }
+                    }
+                    const formattedData = objectToArray(data)
+                    formattedData.map((el) => {
+                        setError(el.name, {
+                            type: 'custom',
+                            message: el.message[0],
+                        })
+                    })
+                }
+            })
     }
 
     return (
@@ -67,7 +93,11 @@ export default function AddUserModal({ open, onClose, fetchUser }) {
                         error={!!errors.role}
                     >
                         <InputLabel>Select Role</InputLabel>
-                        <Select {...register('role')} defaultValue="" label="Select Role">
+                        <Select
+                            {...register('role')}
+                            defaultValue=""
+                            label="Select Role"
+                        >
                             {roles.map((roleOption) => (
                                 <MenuItem
                                     key={roleOption}

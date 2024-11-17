@@ -26,6 +26,8 @@ export default function UserTable({
     handleChangeRowsPerPage,
     handleEdit,
     handleDelete,
+    edit_user_permission,
+    delete_user_permission
 }) {
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -72,6 +74,7 @@ export default function UserTable({
                                         )
                                     })}
                                     <TableCell align="center">
+                                        {edit_user_permission &&(
                                         <IconButton
                                             onClick={() => handleEdit(user)}
                                             color="primary"
@@ -79,12 +82,15 @@ export default function UserTable({
                                         >
                                             <EditIcon />
                                         </IconButton>
+                                        )}
+                                        {delete_user_permission &&(
                                         <IconButton
                                             onClick={() => handleDelete(user)}
                                             color="error"
                                         >
                                             <DeleteIcon />
                                         </IconButton>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             ))}

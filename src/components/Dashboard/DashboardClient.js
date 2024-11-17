@@ -7,28 +7,43 @@ import StickyHeadTable from './StickyHeadTable'
 import { httpClient } from '@/utils/api'
 
 export default function DashboardClient({
-                                            all_users,
-                                            permissionsList,
-                                            login_user_permissions,
-                                        }) {
-
+    all_users,
+    permissionsList,
+    login_user_permissions,
+}) {
     const [openModal, setOpenModal] = useState(false)
     const [users, setUsers] = useState(all_users)
+    const [userPermissions, setUserPermissions] = useState(
+        login_user_permissions
+    )
 
     async function fetchUser() {
         try {
             const res = await httpClient.get('/user/')
-            return {
-                users: res.data,
-            }
+            setUsers(res.data)
         } catch (err) {
-            console.log(err)
-            return {
-                users: [],
-            }
+            console.error(err)
         }
     }
 
+    const create_user_permission = userPermissions.find(
+        (permission) => parseInt(permission.id) === 49
+    )
+    const edit_user_permission = userPermissions.find(
+        (permission) => parseInt(permission.id) === 50
+    )
+    const delete_user_permission = userPermissions.find(
+        (permission) => parseInt(permission.id) === 51
+    )
+
+    async function fetchLoginUserPermission() {
+        try {
+            const res = await httpClient.get('/user/login_user_permissions/')  
+            setUserPermissions(res.data.user_permissions)
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
     return (
         <Box>
@@ -47,14 +62,16 @@ export default function DashboardClient({
                 >
                     All User Information
                 </Typography>
-                <Button
-                    startIcon={<PersonAddIcon />}
-                    variant="outlined"
-                    size="small"
-                    onClick={() => setOpenModal(true)}
-                >
-                    Add User
-                </Button>
+                {create_user_permission && (
+                    <Button
+                        startIcon={<PersonAddIcon />}
+                        variant="outlined"
+                        size="small"
+                        onClick={() => setOpenModal(true)}
+                    >
+                        Add User
+                    </Button>
+                )}
             </Box>
 
             <StickyHeadTable
@@ -62,12 +79,17 @@ export default function DashboardClient({
                 setUsers={setUsers}
                 fetchUser={fetchUser}
                 permissionsList={permissionsList}
+                fetchLoginUserPermission={fetchLoginUserPermission}
+                edit_user_permission={edit_user_permission}
+                delete_user_permission={delete_user_permission}
             />
-            <AddUserModal
-                open={openModal}
-                fetchUser={fetchUser}
-                onClose={() => setOpenModal(false)}
-            />
+            {create_user_permission && (
+                <AddUserModal
+                    open={openModal}
+                    fetchUser={fetchUser}
+                    onClose={() => setOpenModal(false)}
+                />
+            )}
         </Box>
     )
 }
