@@ -7,8 +7,7 @@ import { ThemeProvider as NextThemeProvider } from 'next-themes'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { TokenProvider } from '@/context/tokenContext'
-import { Provider } from 'react-redux'
-import store from '@/redux/store'
+import ReduxProvider from '@/providers/ReduxProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,7 +20,7 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en" suppressHydrationWarning={true}>
             <body className={inter.className}>
-                <Provider store={store}>
+                <ReduxProvider>
                     <NextThemeProvider defaultTheme="dark">
                         <AppRouterCacheProvider options={{ key: 'css' }}>
                             <SessionProvider>
@@ -36,7 +35,7 @@ export default function RootLayout({ children }) {
                             </SessionProvider>
                         </AppRouterCacheProvider>
                     </NextThemeProvider>
-                </Provider>
+                </ReduxProvider>
             </body>
         </html>
     )
