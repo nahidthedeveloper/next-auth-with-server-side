@@ -6,14 +6,14 @@ import UserTable from '@/components/Dashboard/UserTable'
 import { httpClient } from '@/utils/api'
 
 export default function StickyHeadTable({
-                                            users,
-                                            setUsers,
-                                            fetchUser,
-                                            permissionsList,
-                                            fetchLoginUserPermission,
-                                            edit_user_permission,
-                                            delete_user_permission,
-                                        }) {
+    users,
+    setUsers,
+    fetchUser,
+    permissionsList,
+    fetchLoginUserPermission,
+    edit_user_permission,
+    delete_user_permission,
+}) {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [openModal, setOpenModal] = useState({ edit: false, delete: false })
@@ -57,7 +57,10 @@ export default function StickyHeadTable({
         }
 
         try {
-            const res = await httpClient.patch(`/user/${currentUser.id}/`, payload)
+            const res = await httpClient.patch(
+                `/user/${currentUser.id}/`,
+                payload
+            )
 
             alert(res.data.detail)
 
@@ -72,7 +75,6 @@ export default function StickyHeadTable({
 
         setOpenModal({ edit: false, delete: false })
     }
-
 
     const confirmDelete = async () => {
         if (!currentUser) {
@@ -92,7 +94,6 @@ export default function StickyHeadTable({
 
         setOpenModal({ edit: false, delete: false })
     }
-
 
     return (
         <>
@@ -124,7 +125,7 @@ export default function StickyHeadTable({
                     setUserPermissions(
                         typeof e.target.value === 'string'
                             ? e.target.value.split(',')
-                            : e.target.value,
+                            : e.target.value
                     )
                 }
                 handleSave={handleSaveEdit}

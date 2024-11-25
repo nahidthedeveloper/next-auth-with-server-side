@@ -11,20 +11,20 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { TokenContext } from '@/context/tokenContext'
 
 export default function DashboardClient({
-                                            all_users,
-                                            permissionsList,
-                                            login_user_permissions,
-                                        }) {
+    all_users,
+    permissionsList,
+    login_user_permissions,
+}) {
     const [openModal, setOpenModal] = useState(false)
     const [users, setUsers] = useState(all_users)
     const [userPermissions, setUserPermissions] = useState(
-        login_user_permissions,
+        login_user_permissions
     )
     const tokenStatus = useContext(TokenContext)
 
     async function fetchLoginUserPermission() {
         try {
-            const res = await httpClient.get('/user/login_user_permissions/')
+            const res = await httpClient.get('/user/user_permissions/')
             setUserPermissions(res.data.user_permissions)
         } catch (err) {
             console.log('Error fetching permissions:', err.response || err)
@@ -49,16 +49,16 @@ export default function DashboardClient({
     }, [tokenStatus])
 
     const create_user_permission = userPermissions.find(
-        (permission) => parseInt(permission.id) === 49,
+        (permission) => permission.name === 'todos.add_todos'
     )
     const edit_user_permission = userPermissions.find(
-        (permission) => parseInt(permission.id) === 50,
+        (permission) => permission.name === 'todos.change_todos'
     )
     const delete_user_permission = userPermissions.find(
-        (permission) => parseInt(permission.id) === 51,
+        (permission) => permission.name === 'todos.delete_todos'
     )
     const view_user_permission = userPermissions.find(
-        (permission) => parseInt(permission.id) === 52,
+        (permission) => permission.name === 'todos.view_todos'
     )
 
     return (

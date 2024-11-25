@@ -3,6 +3,7 @@ import {
     AppBar,
     Box,
     Button,
+    IconButton,
     styled,
     Switch,
     Toolbar,
@@ -12,6 +13,8 @@ import '../app/globals.css'
 import Link from 'next/link'
 import { signOut, useSession } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
+import Sidebar from './Sidebar'
+import { useTheme } from '@mui/material/styles'
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
@@ -64,26 +67,53 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 const Navbar = ({ toggleThemeMode, darkMode }) => {
     const { data, status } = useSession()
     const pathname = usePathname()
-    const activeColor = '#1e1e1e'
+    const theme = useTheme()
 
     return (
         <AppBar position="sticky">
             <Toolbar className="nav-container">
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    <Link href="/" style={{ textDecoration: 'none' }}>
+                <Box
+                    sx={{
+                        flexGrow: 1,
+                        display: 'flex',
+                        gap: 2,
+                        alignItems: 'center',
+                    }}
+                >
+                    <Sidebar />
+                    <Link
+                        href="/"
+                        style={{ textDecoration: 'none', fontSize: '24px' }}
+                    >
                         App
                     </Link>
-                </Typography>
+                </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     {status === 'authenticated' ? (
                         <div>
-                            <Link href="/dashboard">
+                            <Link
+                                href="/dashboard"
+                                style={{ textDecoration: 'none' }}
+                            >
                                 <Button
                                     sx={{
                                         my: 2,
                                         bgcolor:
-                                            pathname === '/dashboard' &&
-                                            activeColor,
+                                            pathname === '/dashboard'
+                                                ? theme.palette.primary.main
+                                                : 'transparent',
+                                        color:
+                                            pathname === '/dashboard'
+                                                ? theme.palette.primary
+                                                      .contrastText
+                                                : theme.palette.text.primary,
+                                        '&:hover': {
+                                            bgcolor:
+                                                pathname === '/dashboard'
+                                                    ? theme.palette.primary.dark
+                                                    : theme.palette.action
+                                                          .hover,
+                                        },
                                     }}
                                 >
                                     Dashboard
@@ -91,7 +121,14 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
                             </Link>
                             <Button
                                 variant="contained"
-                                sx={{ ml: '30px', bgcolor: 'button' }}
+                                sx={{
+                                    ml: '30px',
+                                    bgcolor: theme.palette.error.main,
+                                    color: theme.palette.error.contrastText,
+                                    '&:hover': {
+                                        bgcolor: theme.palette.error.dark,
+                                    },
+                                }}
                                 size="small"
                                 onClick={() => signOut()}
                             >
@@ -100,26 +137,59 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
                         </div>
                     ) : (
                         <Box>
-                            <Link href="/auth/signup">
+                            <Link
+                                href="/auth/signup"
+                                style={{ textDecoration: 'none' }}
+                            >
                                 <Button
                                     sx={{
                                         my: 2,
+                                        ml: 2,
                                         bgcolor:
-                                            pathname === '/auth/signup' &&
-                                            activeColor,
+                                            pathname === '/auth/signup'
+                                                ? theme.palette.info.main
+                                                : 'transparent',
+                                        color:
+                                            pathname === '/auth/signup'
+                                                ? theme.palette.info
+                                                      .contrastText
+                                                : theme.palette.text.primary,
+                                        '&:hover': {
+                                            bgcolor:
+                                                pathname === '/auth/signup'
+                                                    ? theme.palette.info.dark
+                                                    : theme.palette.action
+                                                          .hover,
+                                        },
                                     }}
                                 >
                                     Signup
                                 </Button>
                             </Link>
-
-                            <Link href="/auth/login">
+                            <Link
+                                href="/auth/login"
+                                style={{ textDecoration: 'none' }}
+                            >
                                 <Button
                                     sx={{
                                         my: 2,
+                                        ml: 2,
                                         bgcolor:
-                                            pathname === '/auth/login' &&
-                                            activeColor,
+                                            pathname === '/auth/login'
+                                                ? theme.palette.info.main
+                                                : 'transparent',
+                                        color:
+                                            pathname === '/auth/login'
+                                                ? theme.palette.info
+                                                      .contrastText
+                                                : theme.palette.text.primary,
+                                        '&:hover': {
+                                            bgcolor:
+                                                pathname === '/auth/login'
+                                                    ? theme.palette.info.dark
+                                                    : theme.palette.action
+                                                          .hover,
+                                        },
                                     }}
                                 >
                                     Login

@@ -22,7 +22,7 @@ import { signupSchema } from '@/components/validators'
 import { httpClient } from '@/utils/api'
 import { objectToArray } from '@/utils'
 
-const roles = ['Admin', 'Manager', 'User']
+const roles = ['Admin', 'User']
 
 export default function AddUserModal({ open, onClose, fetchUser, setUsers }) {
     const {

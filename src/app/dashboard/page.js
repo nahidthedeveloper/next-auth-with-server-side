@@ -15,7 +15,7 @@ export async function fetchUser() {
 
 async function fetchPermissionList() {
     try {
-        const res = await httpServer.get('/user/authentication_permissions/')
+        const res = await httpServer.get('/user/permissions/')
         return { permissionsList: res.data.permissions }
     } catch (err) {
         return { permissionsList: [] }
@@ -24,11 +24,10 @@ async function fetchPermissionList() {
 
 async function fetchLoginUserPermission() {
     try {
-        const res = await httpServer.get('/user/login_user_permissions/')
+        const res = await httpServer.get('/user/user_permissions/')
         return { login_user_permissions: res.data.user_permissions }
     } catch (err) {
-        console.log(err);
-        
+        console.log(err)
     }
 }
 
