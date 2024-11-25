@@ -12,6 +12,6 @@ export const permissionsSlice = createSlice({
     },
 })
 
-export const { fetchPermissions } = counterSlice.actions
+export const { fetchPermissions } = permissionsSlice.actions
 
-export default counterSlice.reducer
+export default permissionsSlice.reducer

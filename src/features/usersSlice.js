@@ -12,6 +12,6 @@ export const usersSlice = createSlice({
     },
 })
 
-export const { fetchUsers } = counterSlice.actions
+export const { fetchUsers } = usersSlice.actions
 
-export default counterSlice.reducer
+export default usersSlice.reducer
