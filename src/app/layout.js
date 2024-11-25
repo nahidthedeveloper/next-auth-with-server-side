@@ -7,6 +7,8 @@ import { ThemeProvider as NextThemeProvider } from 'next-themes'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { TokenProvider } from '@/context/tokenContext'
+import { Provider } from 'react-redux'
+import store from '@/redux/store'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,20 +21,22 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en" suppressHydrationWarning={true}>
             <body className={inter.className}>
-                <NextThemeProvider defaultTheme="dark">
-                    <AppRouterCacheProvider options={{ key: 'css' }}>
-                        <SessionProvider>
-                            <TokenProvider>
-                                <ThemeProvider>
-                                    <div className="container">
-                                        {children}
-                                        <ToastContainer />
-                                    </div>
-                                </ThemeProvider>
-                            </TokenProvider>
-                        </SessionProvider>
-                    </AppRouterCacheProvider>
-                </NextThemeProvider>
+                <Provider store={store}>
+                    <NextThemeProvider defaultTheme="dark">
+                        <AppRouterCacheProvider options={{ key: 'css' }}>
+                            <SessionProvider>
+                                <TokenProvider>
+                                    <ThemeProvider>
+                                        <div className="container">
+                                            {children}
+                                            <ToastContainer />
+                                        </div>
+                                    </ThemeProvider>
+                                </TokenProvider>
+                            </SessionProvider>
+                        </AppRouterCacheProvider>
+                    </NextThemeProvider>
+                </Provider>
             </body>
         </html>
     )
