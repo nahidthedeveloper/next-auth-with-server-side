@@ -17,7 +17,7 @@ export const createHttpServer = async () => {
     })
 
     if (session) {
-        console.log('Session token added:', session.user.token)
+        console.log('Session token added')
     } else {
         console.log('No session token available')
     }

@@ -2,11 +2,9 @@ import {
     AppBar,
     Box,
     Button,
-    IconButton,
     styled,
     Switch,
     Toolbar,
-    Typography,
 } from '@mui/material'
 import '../app/globals.css'
 import Link from 'next/link'
@@ -28,7 +26,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
             transform: 'translateX(22px)',
             '& .MuiSwitch-thumb:before': {
                 backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-                    '#fff'
+                    '#fff',
                 )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
             },
             '& + .MuiSwitch-track': {
@@ -43,7 +41,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
         width: 32,
         height: 32,
         '&::before': {
-            content: "''",
+            content: '\'\'',
             position: 'absolute',
             width: '100%',
             height: '100%',
@@ -52,7 +50,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
             backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-                '#fff'
+                '#fff',
             )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
         },
     },
@@ -67,6 +65,15 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
     const { data, status } = useSession()
     const pathname = usePathname()
     const theme = useTheme()
+    const isAdmin = data?.user?.role === 'admin'
+
+    const auth = [
+        { label: 'Signup', href: '/auth/signup' },
+        { label: 'Login', href: '/auth/login' },
+    ]
+    if (status === 'loading') {
+        return null;
+    }
 
     return (
         <AppBar position="sticky">
@@ -90,34 +97,37 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     {status === 'authenticated' ? (
                         <div>
-                            <Link
-                                href="/dashboard"
-                                style={{ textDecoration: 'none' }}
-                            >
-                                <Button
-                                    sx={{
-                                        my: 2,
-                                        bgcolor:
-                                            pathname === '/dashboard'
-                                                ? theme.palette.primary.main
-                                                : 'transparent',
-                                        color:
-                                            pathname === '/dashboard'
-                                                ? theme.palette.primary
-                                                      .contrastText
-                                                : theme.palette.text.primary,
-                                        '&:hover': {
+                            {isAdmin &&
+                                <Link
+                                    href="/dashboard"
+                                    style={{ textDecoration: 'none' }}
+                                >
+                                    <Button
+                                        sx={{
+                                            my: 2,
                                             bgcolor:
                                                 pathname === '/dashboard'
-                                                    ? theme.palette.primary.dark
-                                                    : theme.palette.action
-                                                          .hover,
-                                        },
-                                    }}
-                                >
-                                    Dashboard
-                                </Button>
-                            </Link>
+                                                    ? theme.palette.primary.main
+                                                    : 'transparent',
+                                            color:
+                                                pathname === '/dashboard'
+                                                    ? theme.palette.primary
+                                                        .contrastText
+                                                    : theme.palette.text.primary,
+                                            '&:hover': {
+                                                bgcolor:
+                                                    pathname === '/dashboard'
+                                                        ? theme.palette.primary.dark
+                                                        : theme.palette.action
+                                                            .hover,
+                                            },
+                                        }}
+                                    >
+                                        Dashboard
+                                    </Button>
+                                </Link>
+                            }
+
                             <Button
                                 variant="contained"
                                 sx={{
@@ -136,65 +146,34 @@ const Navbar = ({ toggleThemeMode, darkMode }) => {
                         </div>
                     ) : (
                         <Box>
-                            <Link
-                                href="/auth/signup"
-                                style={{ textDecoration: 'none' }}
-                            >
-                                <Button
-                                    sx={{
-                                        my: 2,
-                                        ml: 2,
-                                        bgcolor:
-                                            pathname === '/auth/signup'
-                                                ? theme.palette.info.main
-                                                : 'transparent',
-                                        color:
-                                            pathname === '/auth/signup'
-                                                ? theme.palette.info
-                                                      .contrastText
-                                                : theme.palette.text.primary,
-                                        '&:hover': {
+                            {auth.map(({ label, href }) => (
+                                <Link key={href} href={href} style={{ textDecoration: 'none' }}>
+                                    <Button
+                                        sx={{
+                                            my: 2,
+                                            ml: 2,
                                             bgcolor:
-                                                pathname === '/auth/signup'
-                                                    ? theme.palette.info.dark
-                                                    : theme.palette.action
-                                                          .hover,
-                                        },
-                                    }}
-                                >
-                                    Signup
-                                </Button>
-                            </Link>
-                            <Link
-                                href="/auth/login"
-                                style={{ textDecoration: 'none' }}
-                            >
-                                <Button
-                                    sx={{
-                                        my: 2,
-                                        ml: 2,
-                                        bgcolor:
-                                            pathname === '/auth/login'
-                                                ? theme.palette.info.main
-                                                : 'transparent',
-                                        color:
-                                            pathname === '/auth/login'
-                                                ? theme.palette.info
-                                                      .contrastText
-                                                : theme.palette.text.primary,
-                                        '&:hover': {
-                                            bgcolor:
-                                                pathname === '/auth/login'
-                                                    ? theme.palette.info.dark
-                                                    : theme.palette.action
-                                                          .hover,
-                                        },
-                                    }}
-                                >
-                                    Login
-                                </Button>
-                            </Link>
+                                                pathname === href
+                                                    ? theme.palette.info.main
+                                                    : 'transparent',
+                                            color:
+                                                pathname === href
+                                                    ? theme.palette.info.contrastText
+                                                    : theme.palette.text.primary,
+                                            '&:hover': {
+                                                bgcolor:
+                                                    pathname === href
+                                                        ? theme.palette.info.dark
+                                                        : theme.palette.action.hover,
+                                            },
+                                        }}
+                                    >
+                                        {label}
+                                    </Button>
+                                </Link>
+                            ))}
                         </Box>
+
                     )}
                     <MaterialUISwitch
                         sx={{ ml: '20px' }}
