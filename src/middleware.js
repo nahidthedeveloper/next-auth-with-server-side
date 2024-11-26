@@ -11,7 +11,7 @@ export async function middleware(request) {
         secret: process.env.NEXTAUTH_SECRET,
     })
 
-    const isAdmin = session.role === 'admin'
+    const isAdmin = session?.role === 'admin'
 
     if (!isAdmin && currentPath.startsWith('/dashboard')) {
         return NextResponse.redirect(new URL('/', url))
