@@ -8,9 +8,9 @@ import { useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
 
 export default function StickyHeadTable({
-                                            edit_user_permission,
-                                            delete_user_permission,
-                                        }) {
+    edit_user_permission,
+    delete_user_permission,
+}) {
     const router = useRouter()
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -27,7 +27,9 @@ export default function StickyHeadTable({
     }
 
     const users = useSelector((state) => state.usersSlice.users)
-    const permissionsList = useSelector(state => state.permissionsSlice.permissions)
+    const permissionsList = useSelector(
+        (state) => state.permissionsSlice.permissions
+    )
 
     const openEditModal = (user) => {
         setCurrentUser(user)
@@ -61,7 +63,7 @@ export default function StickyHeadTable({
         try {
             const res = await httpClient.patch(
                 `/user/${currentUser.id}/`,
-                payload,
+                payload
             )
 
             if (res.data.detail) {
@@ -74,7 +76,6 @@ export default function StickyHeadTable({
         } finally {
             setOpenModal({ edit: false, delete: false })
         }
-
     }
 
     const confirmDelete = async () => {
@@ -89,7 +90,6 @@ export default function StickyHeadTable({
                 alert(res.data.detail)
                 router.refresh()
             }
-
         } catch (err) {
             console.error('Error deleting user:', err)
         }
@@ -127,7 +127,7 @@ export default function StickyHeadTable({
                     setUserPermissions(
                         typeof e.target.value === 'string'
                             ? e.target.value.split(',')
-                            : e.target.value,
+                            : e.target.value
                     )
                 }
                 handleSave={handleSaveEdit}
