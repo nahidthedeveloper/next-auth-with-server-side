@@ -22,10 +22,10 @@ async function fetchPermissionList() {
     }
 }
 
-async function fetchLoginUserPermission() {
+async function fetchUserPermission() {
     try {
         const res = await httpServer.get('/user/user_permissions/')
-        return { login_user_permissions: res.data.user_permissions }
+        return { user_permissions: res.data.user_permissions }
     } catch (err) {
         console.log(err)
     }
@@ -34,14 +34,14 @@ async function fetchLoginUserPermission() {
 export default async function Dashboard() {
     const { users } = await fetchUser()
     const { permissionsList } = await fetchPermissionList()
-    const { login_user_permissions } = await fetchLoginUserPermission()
+    const { user_permissions } = await fetchUserPermission()
 
     return (
         <Box>
             <DashboardClient
                 all_users={users}
                 permissionsList={permissionsList}
-                login_user_permissions={login_user_permissions}
+                user_permissions={user_permissions}
             />
         </Box>
     )

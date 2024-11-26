@@ -21,10 +21,11 @@ import { toast } from 'react-toastify'
 import { signupSchema } from '@/components/validators'
 import { httpClient } from '@/utils/api'
 import { objectToArray } from '@/utils'
+import { useRouter } from 'next/navigation'
 
 const roles = ['Admin', 'User']
 
-export default function AddUserModal({ open, onClose, fetchUser, setUsers }) {
+export default function AddUserModal({ open, onClose, setUsers }) {
     const {
         register,
         handleSubmit,
@@ -36,18 +37,18 @@ export default function AddUserModal({ open, onClose, fetchUser, setUsers }) {
         resolver: yupResolver(signupSchema),
     })
 
+    const router = useRouter()
+
     const submitForm = async (data) => {
         try {
             const response = await httpClient.post(`/user/`, data)
 
-            toast.success(response.data.detail)
-            reset()
-            onClose()
-
-            const updatedUsers = await fetchUser()
-
-            setUsers(updatedUsers)
-
+            if (response.data.detail) {
+                toast.success(response.data.detail)
+                reset()
+                onClose()
+                router.refresh()
+            }
         } catch (err) {
             const { data } = err.response
             if (data) {

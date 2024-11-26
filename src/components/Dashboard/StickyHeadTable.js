@@ -4,19 +4,18 @@ import EditModal from '@/components/Modal/EditModal'
 import DeleteModal from '@/components/Modal/DeleteModal'
 import UserTable from '@/components/Dashboard/UserTable'
 import { httpClient } from '@/utils/api'
+import { useSelector } from 'react-redux'
+import { useRouter } from 'next/navigation'
 
 export default function StickyHeadTable({
-    users,
-    setUsers,
-    fetchUser,
-    permissionsList,
-    fetchLoginUserPermission,
-    edit_user_permission,
-    delete_user_permission,
-}) {
+                                            edit_user_permission,
+                                            delete_user_permission,
+                                        }) {
+    const router = useRouter()
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [openModal, setOpenModal] = useState({ edit: false, delete: false })
+
     const [currentUser, setCurrentUser] = useState(null)
     const [userRole, setUserRole] = useState('')
     const [userPermissions, setUserPermissions] = useState([])
@@ -26,6 +25,9 @@ export default function StickyHeadTable({
         setRowsPerPage(+e.target.value)
         setPage(0)
     }
+
+    const users = useSelector((state) => state.usersSlice.users)
+    const permissionsList = useSelector(state => state.permissionsSlice.permissions)
 
     const openEditModal = (user) => {
         setCurrentUser(user)
@@ -59,21 +61,20 @@ export default function StickyHeadTable({
         try {
             const res = await httpClient.patch(
                 `/user/${currentUser.id}/`,
-                payload
+                payload,
             )
 
-            alert(res.data.detail)
-
-            const updatedUsers = await fetchUser()
-
-            setUsers(updatedUsers)
-            await fetchLoginUserPermission()
+            if (res.data.detail) {
+                alert(res.data.detail)
+                router.refresh()
+            }
         } catch (err) {
             console.error('Error saving edit:', err)
             alert('Failed to save the changes. Please try again.')
+        } finally {
+            setOpenModal({ edit: false, delete: false })
         }
 
-        setOpenModal({ edit: false, delete: false })
     }
 
     const confirmDelete = async () => {
@@ -84,10 +85,11 @@ export default function StickyHeadTable({
 
         try {
             const res = await httpClient.delete(`/user/${currentUser.id}/`)
-            alert(res.data.detail)
+            if (res.data.detail) {
+                alert(res.data.detail)
+                router.refresh()
+            }
 
-            const updatedUsers = await fetchUser()
-            setUsers(updatedUsers)
         } catch (err) {
             console.error('Error deleting user:', err)
         }
@@ -125,7 +127,7 @@ export default function StickyHeadTable({
                     setUserPermissions(
                         typeof e.target.value === 'string'
                             ? e.target.value.split(',')
-                            : e.target.value
+                            : e.target.value,
                     )
                 }
                 handleSave={handleSaveEdit}

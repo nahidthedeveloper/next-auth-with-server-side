@@ -1,17 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export const permissionsSlice = createSlice({
-    name: 'permissions',
+    name: 'permissionsSlice',
     initialState: {
         permissions: [],
     },
     reducers: {
-        fetchPermissions: () => {
-            // fetch permissions here
+        updatePermissionsState: (state, action) => {
+            state.permissions = action.payload
         },
     },
 })
 
-export const { fetchPermissions } = permissionsSlice.actions
+export const { updatePermissionsState } = permissionsSlice.actions
 
 export default permissionsSlice.reducer
