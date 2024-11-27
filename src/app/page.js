@@ -16,7 +16,6 @@ export default async function Home() {
                 <h1>User Permissions</h1>
                 <p>{userPermissions ? userPermissions.value : 'No permissions found'}</p>
             </div>
-            <Link href='/hello'> hello </Link>
             <Box
                 sx={{
                     display: 'flex',
