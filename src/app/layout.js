@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { TokenProvider } from '@/context/tokenContext'
 import ReduxProvider from '@/providers/ReduxProvider'
-import { RefreshProvider } from '@/context/RefreshContext'
+import { UserPermissions } from '@/context/UserPermissionsContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,12 +27,12 @@ export default function RootLayout({ children }) {
                             <SessionProvider>
                                 <TokenProvider>
                                     <ThemeProvider>
-                                        <RefreshProvider>
+                                        <UserPermissions>
                                             <div className="container">
                                                 {children}
                                                 <ToastContainer />
                                             </div>
-                                        </RefreshProvider>
+                                        </UserPermissions>
                                     </ThemeProvider>
                                 </TokenProvider>
                             </SessionProvider>
