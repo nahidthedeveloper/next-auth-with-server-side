@@ -2,6 +2,7 @@ import { authOptions } from '@/utils/nextAuth'
 import { getServerSession } from 'next-auth'
 import { Box, Typography, Paper, Avatar, Divider, Stack } from '@mui/material'
 import { cookies } from 'next/headers'
+import Link from 'next/link'
 
 export default async function Home() {
     const session = await getServerSession(authOptions)
@@ -15,6 +16,7 @@ export default async function Home() {
                 <h1>User Permissions</h1>
                 <p>{userPermissions ? userPermissions.value : 'No permissions found'}</p>
             </div>
+            <Link href='/hello'> hello </Link>
             <Box
                 sx={{
                     display: 'flex',

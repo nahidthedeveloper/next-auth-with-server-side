@@ -11,7 +11,7 @@ export const createHttpServer = async () => {
             'Content-Type': 'application/json',
             ...(session &&
                 session.user.token && {
-                    Authorization: `Bearer ${session.user.token}`,
+                    Authorization: `Bearer ${session?.user.token}`,
                 }),
         },
     })

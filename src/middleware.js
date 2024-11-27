@@ -7,6 +7,27 @@ export async function middleware(request) {
         req: request,
         secret: process.env.NEXTAUTH_SECRET,
     })
+    const isAdmin = session?.role === 'admin'
+    const currentPath = nextUrl.pathname
+
+    if (!isAdmin && currentPath.startsWith('/dashboard')) {
+        return NextResponse.redirect(new URL('/', request.nextUrl.origin))
+    }
+
+    if (session?.token && currentPath.startsWith('/auth')) {
+        return NextResponse.redirect(new URL('/', request.nextUrl.origin))
+    }
+
+    if (!session?.token && !currentPath.startsWith('/auth')) {
+        return NextResponse.redirect(
+            new URL('/auth/login', request.nextUrl.origin)
+        )
+    }
+
+
+//================================================================================
+//       SET USER PERMISSIONS PART HERE
+//================================================================================
 
     const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL_SERVER}user/user_permissions/`,
@@ -35,23 +56,6 @@ export async function middleware(request) {
         )
     } else {
         response.cookies.delete('user_permissions', { path: '/' })
-    }
-
-    const isAdmin = session?.role === 'admin'
-    const currentPath = nextUrl.pathname
-
-    if (!isAdmin && currentPath.startsWith('/dashboard')) {
-        return NextResponse.redirect(new URL('/', request.nextUrl.origin))
-    }
-
-    if (session?.token && currentPath.startsWith('/auth')) {
-        return NextResponse.redirect(new URL('/', request.nextUrl.origin))
-    }
-
-    if (!session?.token && !currentPath.startsWith('/auth')) {
-        return NextResponse.redirect(
-            new URL('/auth/login', request.nextUrl.origin)
-        )
     }
 
     return response

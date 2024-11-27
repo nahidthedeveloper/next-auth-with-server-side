@@ -39,9 +39,12 @@ const TodoListTable = ({ todos, onSave, onDelete }) => {
                 setCreateValue('')
                 router.refresh()
             }
-        } catch (err) {
+        } catch (err) {      
             if (err.response.data.todo) {
                 alert(err.response.data.todo[0])
+            }
+            if (err.response.data.detail) {
+                alert(err.response.data.detail)
             }
         }
     }
@@ -71,6 +74,9 @@ const TodoListTable = ({ todos, onSave, onDelete }) => {
             if (err.response.data.todo) {
                 alert(err.response.data.todo[0])
             }
+            if (err.response.data.detail) {
+                alert(err.response.data.detail)
+            }
         }
     }
 
@@ -82,7 +88,9 @@ const TodoListTable = ({ todos, onSave, onDelete }) => {
                 router.refresh()
             }
         } catch (err) {
-            console.log(err)
+            if (err.response.data.detail) {
+                alert(err.response.data.detail)
+            }
         }
     }
 
