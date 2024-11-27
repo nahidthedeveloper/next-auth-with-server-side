@@ -13,7 +13,7 @@ export default async function Home() {
         <div>
             <div>
                 <h1>User Permissions</h1>
-                <pre>{userPermissions ? userPermissions.value : 'No permissions found'}</pre>
+                <p>{userPermissions ? userPermissions.value : 'No permissions found'}</p>
             </div>
             <Box
                 sx={{
