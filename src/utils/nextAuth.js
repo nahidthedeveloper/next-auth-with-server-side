@@ -1,6 +1,9 @@
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { objectToArray } from './index'
 import { httpClient } from './api'
+import fetchUserPermissions from '@/utils/fetchUserPermissions'
+import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 
 
 export const authOptions = {
@@ -14,9 +17,17 @@ export const authOptions = {
                     password,
                 }
                 try {
-                    const { data } = await httpClient.post(
-                        `/auth/login/`,
-                        payload
+                    const { data } = await httpClient.post(`/auth/login/`, payload)
+
+                    const userPermissions = await fetchUserPermissions(data.token)
+                    cookies().set(
+                        'user_permissions',
+                        JSON.stringify(userPermissions.user_permissions || []),
+                        {
+                            httpOnly: true,
+                            secure: process.env.NODE_ENV === 'production',
+                            path: '/',
+                        },
                     )
                     return data
                 } catch (error) {
@@ -40,6 +51,7 @@ export const authOptions = {
             return token
         },
         async session({ session, token }) {
+            // Pass token data (including permissions) to session
             session.user = {
                 ...token,
                 ...session.user,

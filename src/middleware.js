@@ -15,18 +15,16 @@ export async function middleware(request) {
 
     if (cacheControl) {
         const response = NextResponse.next()
-        if (session?.token) {
-            const userPer = await fetchUserPermissions(session?.token)
-            response.cookies.set(
-                'user_permissions',
-                JSON.stringify(userPer?.user_permissions || []),
-                {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    path: '/',
-                },
-            )
-        }
+        const userPer = await fetchUserPermissions(session?.token)
+        response.cookies.set(
+            'user_permissions',
+            JSON.stringify(userPer?.user_permissions || []),
+            {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                path: '/',
+            },
+        )
         return response
     }
 
