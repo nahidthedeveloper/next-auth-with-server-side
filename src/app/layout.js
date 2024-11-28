@@ -8,7 +8,6 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { TokenProvider } from '@/context/tokenContext'
 import ReduxProvider from '@/providers/ReduxProvider'
-import { UserPermissions } from '@/context/UserPermissionsContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,26 +19,24 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang="en" suppressHydrationWarning={true}>
-            <body className={inter.className}>
-                <ReduxProvider>
-                    <NextThemeProvider defaultTheme="dark">
-                        <AppRouterCacheProvider options={{ key: 'css' }}>
-                            <SessionProvider>
-                                <TokenProvider>
-                                    <ThemeProvider>
-                                        <UserPermissions>
-                                            <div className="container">
-                                                {children}
-                                                <ToastContainer />
-                                            </div>
-                                        </UserPermissions>
-                                    </ThemeProvider>
-                                </TokenProvider>
-                            </SessionProvider>
-                        </AppRouterCacheProvider>
-                    </NextThemeProvider>
-                </ReduxProvider>
-            </body>
+        <body className={inter.className}>
+        <ReduxProvider>
+            <NextThemeProvider defaultTheme="dark">
+                <AppRouterCacheProvider options={{ key: 'css' }}>
+                    <SessionProvider>
+                        <TokenProvider>
+                            <ThemeProvider>
+                                <div className="container">
+                                    {children}
+                                    <ToastContainer />
+                                </div>
+                            </ThemeProvider>
+                        </TokenProvider>
+                    </SessionProvider>
+                </AppRouterCacheProvider>
+            </NextThemeProvider>
+        </ReduxProvider>
+        </body>
         </html>
     )
 }
