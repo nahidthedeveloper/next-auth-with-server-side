@@ -7,14 +7,16 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TablePagination from '@mui/material/TablePagination'
-import { useState } from 'react'
-import { IconButton, TextField, Button, Box } from '@mui/material'
+import React, { useState } from 'react'
+import { IconButton, TextField, Button, Box, Typography } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { httpClient } from '@/utils/api'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
-const TodoListTable = ({ todos, onSave, onDelete }) => {
+const TodoListTable = ({ todos, userPermissions }) => {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [editingId, setEditingId] = useState(null)
@@ -39,7 +41,7 @@ const TodoListTable = ({ todos, onSave, onDelete }) => {
                 setCreateValue('')
                 router.refresh()
             }
-        } catch (err) {      
+        } catch (err) {
             if (err.response.data.todo) {
                 alert(err.response.data.todo[0])
             }
@@ -94,149 +96,194 @@ const TodoListTable = ({ todos, onSave, onDelete }) => {
         }
     }
 
+    function hasPermission(permissionName) {
+        return userPermissions.some((permission) => permission.name === permissionName)
+    }
+
     return (
         <Box>
-            <Box
-                sx={{
-                    my: 3,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: 2,
-                }}
-            >
-                <TextField
-                    id="outlined-basic"
-                    variant="outlined"
-                    style={{ width: '50%' }}
-                    value={createValue}
-                    onChange={(e) => setCreateValue(e.target.value)}
-                />
-                <Box>
-                    <Button
-                        variant="contained"
-                        onClick={() => handleCreateTodo()}
-                    >
-                        Add
-                    </Button>
-                </Box>
-            </Box>
-            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: 440 }}>
-                    <Table stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell
-                                    align="center"
-                                    style={{ width: 100 }}
-                                >
-                                    No.
-                                </TableCell>
-                                <TableCell style={{ minWidth: 170 }}>
-                                    Todo
-                                </TableCell>
-                                <TableCell
-                                    style={{ width: 150 }}
-                                    align="center"
-                                >
-                                    Actions
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {todos
-                                ?.slice(
-                                    page * rowsPerPage,
-                                    page * rowsPerPage + rowsPerPage
-                                )
-                                .map((todo, index) => (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        tabIndex={-1}
-                                        key={todo.id}
+            {
+                hasPermission('todos.view_todos') ? (
+                    <Box>
+                        {hasPermission('todos.add_todos') &&
+                            <Box
+                                sx={{
+                                    my: 3,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    gap: 2,
+                                }}
+                            >
+                                <TextField
+                                    id="outlined-basic"
+                                    variant="outlined"
+                                    style={{ width: '50%' }}
+                                    value={createValue}
+                                    onChange={(e) => setCreateValue(e.target.value)}
+                                />
+                                <Box>
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => handleCreateTodo()}
                                     >
-                                        <TableCell align="center">
-                                            {page * rowsPerPage + index + 1}
-                                        </TableCell>
-                                        <TableCell>
-                                            {editingId === todo.id ? (
-                                                <Box display="flex" gap={1}>
-                                                    <TextField
-                                                        fullWidth
-                                                        value={editedTodo}
-                                                        sx={{
-                                                            height: '40px',
-                                                            '& .MuiInputBase-root':
-                                                                {
-                                                                    height: '40px',
-                                                                },
-                                                        }}
-                                                        onChange={(e) =>
-                                                            setEditedTodo(
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                    />
-                                                    <Button
-                                                        variant="contained"
-                                                        color="primary"
-                                                        sx={{ height: '40px' }}
-                                                        onClick={() =>
-                                                            handleSave(todo.id)
-                                                        }
-                                                    >
-                                                        Save
-                                                    </Button>
-                                                    <Button
-                                                        variant="outlined"
-                                                        color="secondary"
-                                                        sx={{ height: '40px' }}
-                                                        onClick={handleCancel}
-                                                    >
-                                                        Cancel
-                                                    </Button>
-                                                </Box>
-                                            ) : (
-                                                todo.todo
-                                            )}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <IconButton
-                                                onClick={() =>
-                                                    editingId
-                                                        ? handleCancel()
-                                                        : handleEdit(todo)
-                                                }
-                                                color="primary"
-                                                style={{ marginRight: '8px' }}
+                                        Add
+                                    </Button>
+                                </Box>
+                            </Box>
+                        }
+                        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                            <TableContainer sx={{ maxHeight: 440 }}>
+                                <Table stickyHeader>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell
+                                                align="center"
+                                                style={{ width: 100 }}
                                             >
-                                                <EditIcon />
-                                            </IconButton>
-                                            <IconButton
-                                                onClick={() =>
-                                                    handleDelete(todo.id)
-                                                }
-                                                color="error"
+                                                No.
+                                            </TableCell>
+                                            <TableCell style={{ minWidth: 170 }}>
+                                                Todo
+                                            </TableCell>
+                                            <TableCell
+                                                style={{ width: 150 }}
+                                                align="center"
                                             >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[10, 25, 100]}
-                    component="div"
-                    count={todos?.length || 0}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
+                                                Actions
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {todos
+                                            ?.slice(
+                                                page * rowsPerPage,
+                                                page * rowsPerPage + rowsPerPage,
+                                            )
+                                            .map((todo, index) => (
+                                                <TableRow
+                                                    hover
+                                                    role="checkbox"
+                                                    tabIndex={-1}
+                                                    key={todo.id}
+                                                >
+                                                    <TableCell align="center">
+                                                        {page * rowsPerPage + index + 1}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {editingId === todo.id ? (
+                                                            <Box display="flex" gap={1}>
+                                                                <TextField
+                                                                    fullWidth
+                                                                    value={editedTodo}
+                                                                    sx={{
+                                                                        height: '40px',
+                                                                        '& .MuiInputBase-root':
+                                                                            {
+                                                                                height: '40px',
+                                                                            },
+                                                                    }}
+                                                                    onChange={(e) =>
+                                                                        setEditedTodo(
+                                                                            e.target.value,
+                                                                        )
+                                                                    }
+                                                                />
+                                                                <Button
+                                                                    variant="contained"
+                                                                    color="primary"
+                                                                    sx={{ height: '40px' }}
+                                                                    onClick={() =>
+                                                                        handleSave(todo.id)
+                                                                    }
+                                                                >
+                                                                    Save
+                                                                </Button>
+                                                                <Button
+                                                                    variant="outlined"
+                                                                    color="secondary"
+                                                                    sx={{ height: '40px' }}
+                                                                    onClick={handleCancel}
+                                                                >
+                                                                    Cancel
+                                                                </Button>
+                                                            </Box>
+                                                        ) : (
+                                                            todo.todo
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        {hasPermission('todos.change_todos') &&
+                                                            <IconButton
+                                                                onClick={() =>
+                                                                    editingId
+                                                                        ? handleCancel()
+                                                                        : handleEdit(todo)
+                                                                }
+                                                                color="primary"
+                                                                style={{ marginRight: '8px' }}
+                                                            >
+                                                                <EditIcon />
+                                                            </IconButton>
+                                                        }
+                                                        {hasPermission('todos.delete_todos') &&
+                                                            <IconButton
+                                                                onClick={() =>
+                                                                    handleDelete(todo.id)
+                                                                }
+                                                                color="error"
+                                                            >
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        }
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <TablePagination
+                                rowsPerPageOptions={[10, 25, 100]}
+                                component="div"
+                                count={todos?.length || 0}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                        </Paper>
+                    </Box>
+
+                ) : (
+                    <Box
+                        sx={{
+                            mt: '20px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: '100%',
+                            alignItems: 'center',
+                            gap: '10px',
+                        }}
+                    >
+                        <Typography
+                            variant="h5"
+                            gutterBottom
+                            sx={{ fontWeight: 'bold' }}
+                        >
+                            You do not have permission to view this page.
+                        </Typography>
+                        <Link href="/">
+                            <Button
+                                sx={{ my: 2 }}
+                                variant="contained"
+                                startIcon={<ArrowBackIcon />}
+                            >
+                                Back to Home
+                            </Button>
+                        </Link>
+                    </Box>
+                )
+            }
         </Box>
     )
 }

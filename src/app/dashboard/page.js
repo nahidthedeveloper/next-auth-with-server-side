@@ -1,6 +1,7 @@
 import DashboardClient from '@/components/Dashboard/DashboardClient'
 import { createHttpServer } from '@/utils/api_server'
 import { Box } from '@mui/material'
+import { cookies } from 'next/headers'
 
 const httpServer = await createHttpServer()
 
@@ -22,26 +23,19 @@ async function fetchPermissionList() {
     }
 }
 
-async function fetchUserPermission() {
-    try {
-        const res = await httpServer.get('/user/user_permissions/')
-        return { user_permissions: res.data.user_permissions }
-    } catch (err) {
-        console.log(err)
-    }
-}
-
 export default async function Dashboard() {
+    const cookieStore = cookies()
+    const userPermissions = await cookieStore.get('user_permissions')
     const { users } = await fetchUser()
     const { permissionsList } = await fetchPermissionList()
-    const { user_permissions } = await fetchUserPermission()
+
 
     return (
         <Box>
             <DashboardClient
                 all_users={users}
                 permissionsList={permissionsList}
-                user_permissions={user_permissions}
+                user_permissions={userPermissions}
             />
         </Box>
     )

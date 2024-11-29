@@ -1,5 +1,6 @@
 import TodoListTable from '@/components/todos/TodoListTable'
 import { createHttpServer } from '@/utils/api_server'
+import { cookies } from 'next/headers'
 
 const httpServer = await createHttpServer()
 
@@ -11,18 +12,11 @@ export async function fetchTodos() {
         return { todos: [] }
     }
 }
-// export async function fetchUserPermissions() {
-//     try {
-//         const res = await httpServer.get('/user/user_permissions/')
-//         return { user_permissions: res.data.user_permissions }
-//     } catch (err) {
-//         return { user_permissions: [] }
-//     }
-// }
 
 export default async function View() {
+    const cookieStore = cookies()
+    const userPermissions = await cookieStore.get('user_permissions')
     const { todos } = await fetchTodos()
-    // const { user_permissions } = await fetchTodos()
 
-    return <TodoListTable todos={todos} />
+    return <TodoListTable todos={todos} userPermissions={JSON.parse(userPermissions.value)}/>
 }
