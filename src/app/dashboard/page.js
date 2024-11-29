@@ -35,7 +35,7 @@ export default async function Dashboard() {
             <DashboardClient
                 all_users={users}
                 permissionsList={permissionsList}
-                user_permissions={userPermissions}
+                user_permissions={JSON.parse(userPermissions.value)}
             />
         </Box>
     )
